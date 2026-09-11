@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMYK カラーシミュレーター</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="simulator-card">
+    <h2>CMYK カラープレビュー</h2>
+    <p class="subtitle">スライダーを動かしてCMYK値を調整してください。</p>
+
+    <!-- プレビューボックス -->
+    <div class="preview-container">
+      <div id="color-preview" class="color-box"></div>
+      <div class="color-values">
+        <span id="cmyk-display">C: 0% | M: 0% | Y: 0% | K: 0%</span>
+        <span id="hex-display" class="hex-text">#FFFFFF</span>
+      </div>
+    </div>
+
+    <!-- スライダー群 -->
+    <div class="controls">
+      <div class="control-group">
+        <label for="slider-c">C (シアン): <span id="val-c">0</span>%</label>
+        <input type="range" id="slider-c" min="0" max="100" value="0">
+      </div>
+
+      <div class="control-group">
+        <label for="slider-m">M (マゼンタ): <span id="val-m">0</span>%</label>
+        <input type="range" id="slider-m" min="0" max="100" value="0">
+      </div>
+
+      <div class="control-group">
+        <label for="slider-y">Y (イエロー): <span id="val-y">0</span>%</label>
+        <input type="range" id="slider-y" min="0" max="100" value="0">
+      </div>
+
+      <div class="control-group">
+        <label for="slider-k">K (ブラック): <span id="val-k">0</span>%</label>
+        <input type="range" id="slider-k" min="0" max="100" value="0">
+      </div>
+    </div>
+
+    <!-- 注意事項（免責文言） -->
+    <div class="disclaimer">
+      <p><strong>【ご注意】</strong></p>
+      <p>※こちらのプレビューは画面表示用（RGB）に近似変換したイメージです。</p>
+      <p>※お使いの端末（スマホ・PC）の画面設定や液晶の特性、ならびに印刷素材（ハードケース・ソフトケース等）の違いにより、お届けする実物と色味が異なる場合がございます。あらかじめご了承ください。</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
