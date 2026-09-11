@@ -1,57 +1,668 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CMYK カラーシミュレーター</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FFFFFF">
+  <title>色をつくる｜minohi design</title>
+  <meta name="description" content="C・M・Y・K の数値を動かして、スマホケースの色を画面で確かめられます。決まった色のコードはそのままコピーできます。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Noto+Sans+JP:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --surround: #FFFFFF;
+      --paper: #FFFFFF;
+      --ink: #2B3238;
+      --muted: #79838B;
+      --line: #DDDDDC;
+      --field: #F2F2F1;
+      --focus: #5E7E97;
+      --copied: #5E7E97;
+      --bk: #fbfbfb;
+      --shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%
+    }
+
+    body {
+      margin: 0;
+      background: var(--bk);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', 'Noto Sans JP', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h2,
+    p {
+      margin: 0
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer
+    }
+
+    .wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px 20px calc(48px + env(safe-area-inset-bottom))
+    }
+
+    /* ---------- header ---------- */
+    .logo {
+      display: block;
+      width: 124px;
+      height: auto;
+      margin: 0 auto
+    }
+
+    .lede {
+      margin-top: 22px;
+      max-width: 36em;
+      font-size: 1rem;
+      line-height: 1.9;
+      letter-spacing: .02em;
+      color: var(--muted)
+    }
+
+    /* ---------- swatch (sticky) ---------- */
+    .viewer {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 14px 0 12px;
+      background: var(--surround);
+    }
+
+    .chip {
+      height: clamp(104px, 19vh, 168px);
+      border-radius: 10px;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10);
+      background: #fff;
+    }
+
+    .readout {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      margin-top: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pair {
+      display: flex;
+      align-items: baseline;
+      gap: 5px
+    }
+
+    .pair .ch {
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      color: var(--muted)
+    }
+
+    .pair .val {
+      font-size: 1.375rem;
+      font-weight: 600;
+      letter-spacing: -.01em
+    }
+
+    /* ---------- sliders ---------- */
+    .controls {
+      padding: 4px 16px 16px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1.2rem 1fr auto auto;
+      column-gap: 9px;
+      align-items: center;
+      padding: 12px 0 8px
+    }
+
+    .row+.row {
+      border-top: 1px solid var(--line)
+    }
+
+    .row .ch {
+      font-size: .9rem;
+      font-weight: 600
+    }
+
+    .row .name {
+      font-size: .8125rem;
+      letter-spacing: .04em;
+      color: var(--muted)
+    }
+
+    .row .pct {
+      font-size: .8125rem;
+      color: var(--muted)
+    }
+
+    .num {
+      width: 3.3rem;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--field);
+      color: var(--ink);
+      text-align: center;
+      font: inherit;
+      font-size: .9375rem;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      -webkit-appearance: none;
+      appearance: none;
+      -moz-appearance: textfield;
+    }
+
+    .num::-webkit-outer-spin-button,
+    .num::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0
+    }
+
+    .num:focus {
+      border-color: var(--focus);
+      outline: none
+    }
+
+    .rng {
+      grid-column: 1/-1;
+      width: 100%;
+      height: 38px;
+      margin: 0;
+      background: transparent;
+      -webkit-appearance: none;
+      appearance: none
+    }
+
+    .rng::-webkit-slider-runnable-track {
+      height: 12px;
+      border-radius: 999px;
+      background: var(--track, #eee);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12)
+    }
+
+    .rng::-moz-range-track {
+      height: 12px;
+      border-radius: 999px;
+      background: var(--track, #eee);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12)
+    }
+
+    .rng::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 26px;
+      height: 26px;
+      margin-top: -7px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, .2);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .25)
+    }
+
+    .rng::-moz-range-thumb {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, .2);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .25)
+    }
+
+    .limit {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--field);
+      font-size: .875rem;
+      line-height: 1.9;
+      letter-spacing: .03em
+    }
+
+    .limit[hidden] {
+      display: none
+    }
+
+    /* ---------- actions ---------- */
+    .copy {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      min-height: 52px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--ink);
+      color: #fff;
+      font-size: .9375rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      transition: background .15s ease;
+    }
+
+    .copy:hover {
+      background: #3A434A
+    }
+
+    .copy.is-copied {
+      background: var(--copied)
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 1.8em;
+      margin-top: 8px
+    }
+
+    .status {
+      font-size: .8125rem;
+      letter-spacing: .03em;
+      color: var(--copied)
+    }
+
+    .reset {
+      padding: 4px 0;
+      border: 0;
+      background: none;
+      font-size: .8125rem;
+      letter-spacing: .04em;
+      color: var(--muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      white-space: nowrap;
+      margin: 0 auto;
+    }
+
+    .reset:hover {
+      color: var(--ink)
+    }
+
+    /* ---------- note ---------- */
+    .note {
+      margin-top: 28px;
+      padding: 30px;
+      background: var(--paper);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .note h2 {
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: .06em
+    }
+
+    .note p {
+      margin-top: 12px;
+      font-size: 1rem;
+      line-height: 1.95;
+      letter-spacing: .02em;
+      color: var(--muted)
+    }
+
+    .foot {
+      margin-top: 28px;
+      text-align: center;
+      font-size: .8125rem;
+      letter-spacing: .08em;
+      color: var(--muted)
+    }
+
+    :where(button, input, a):focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 3px
+    }
+
+    .grid {
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        margin-top: 20px;
+        box-shadow: var(--shadow);
+      }
+
+    @media (min-width:880px) {
+      .wrap {
+        padding: 40px 40px 64px
+      }
+
+      .logo {
+        width: 148px
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 48px;
+        align-items: start;
+        margin-top: 40px;
+      }
+
+      .viewer {
+        top: 24px;
+        padding-top: 0
+      }
+
+      .chip {
+        height: auto;
+        aspect-ratio: 4/3
+      }
+
+      .pair .val {
+        font-size: 1.625rem
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      * {
+        transition: none !important
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-  <div class="simulator-card">
-    <h2>CMYK カラープレビュー</h2>
-    <p class="subtitle">スライダーを動かしてCMYK値を調整してください。</p>
+  <div class="wrap">
+    <header>
+      <img class="logo" src="logo.svg" width="368" height="189" alt="minohi design">
+    </header>
 
-    <!-- プレビューボックス -->
-    <div class="preview-container">
-      <div id="color-preview" class="color-box"></div>
-      <div class="color-values">
-        <span id="cmyk-display">C: 0% | M: 0% | Y: 0% | K: 0%</span>
-        <span id="hex-display" class="hex-text">#FFFFFF</span>
-      </div>
-    </div>
+    <main class="grid">
+      <section class="viewer">
+        <div class="chip" id="chip"></div>
+        <div class="readout">
+          <span class="pair"><span class="ch">C</span><span class="val" id="vc">0</span></span>
+          <span class="pair"><span class="ch">M</span><span class="val" id="vm">0</span></span>
+          <span class="pair"><span class="ch">Y</span><span class="val" id="vy">0</span></span>
+          <span class="pair"><span class="ch">K</span><span class="val" id="vk">0</span></span>
+        </div>
+      </section>
 
-    <!-- スライダー群 -->
-    <div class="controls">
-      <div class="control-group">
-        <label for="slider-c">C (シアン): <span id="val-c">0</span>%</label>
-        <input type="range" id="slider-c" min="0" max="100" value="0">
-      </div>
+      <section class="panel">
+        <div class="controls">
+          <div class="row">
+            <label class="ch" for="sc">C</label>
+            <span class="name">シアン</span>
+            <input class="num" id="nc" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+              aria-label="シアンの数値">
+            <span class="pct">%</span>
+            <input class="rng" id="sc" type="range" min="0" max="100" step="1" value="0" aria-label="シアン">
+          </div>
+          <div class="row">
+            <label class="ch" for="sm">M</label>
+            <span class="name">マゼンタ</span>
+            <input class="num" id="nm" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+              aria-label="マゼンタの数値">
+            <span class="pct">%</span>
+            <input class="rng" id="sm" type="range" min="0" max="100" step="1" value="0" aria-label="マゼンタ">
+          </div>
+          <div class="row">
+            <label class="ch" for="sy">Y</label>
+            <span class="name">イエロー</span>
+            <input class="num" id="ny" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+              aria-label="イエローの数値">
+            <span class="pct">%</span>
+            <input class="rng" id="sy" type="range" min="0" max="100" step="1" value="0" aria-label="イエロー">
+          </div>
+          <div class="row">
+            <label class="ch" for="sk">K</label>
+            <span class="name">ブラック</span>
+            <input class="num" id="nk" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+              aria-label="ブラックの数値">
+            <span class="pct">%</span>
+            <input class="rng" id="sk" type="range" min="0" max="100" step="1" value="0" aria-label="ブラック">
+          </div>
+          <p class="limit" id="limit" hidden></p>
+        </div>
 
-      <div class="control-group">
-        <label for="slider-m">M (マゼンタ): <span id="val-m">0</span>%</label>
-        <input type="range" id="slider-m" min="0" max="100" value="0">
-      </div>
+        <button class="copy" id="copyBtn" type="button">この色のコードをコピー</button>
+        <div class="actions">
+          <p class="status" id="status" role="status" aria-live="polite"></p>
+          <button class="reset" id="reset" type="button">色をリセットする</button>
+        </div>
+      </section>
+    </main>
 
-      <div class="control-group">
-        <label for="slider-y">Y (イエロー): <span id="val-y">0</span>%</label>
-        <input type="range" id="slider-y" min="0" max="100" value="0">
-      </div>
+    <section class="note">
+      <h2>印刷の色について</h2>
+      <p>お使いの端末やモニターの設定によって見え方が変わり、実際の印刷ではインクと素材の性質によっても発色が変わります。色みの目安としてご覧ください。</p>
+    </section>
 
-      <div class="control-group">
-        <label for="slider-k">K (ブラック): <span id="val-k">0</span>%</label>
-        <input type="range" id="slider-k" min="0" max="100" value="0">
-      </div>
-    </div>
-
-    <!-- 注意事項（免責文言） -->
-    <div class="disclaimer">
-      <p><strong>【ご注意】</strong></p>
-      <p>※こちらのプレビューは画面表示用（RGB）に近似変換したイメージです。</p>
-      <p>※お使いの端末（スマホ・PC）の画面設定や液晶の特性、ならびに印刷素材（ハードケース・ソフトケース等）の違いにより、お届けする実物と色味が異なる場合がございます。あらかじめご了承ください。</p>
-    </div>
+    <p class="foot">&copy; minohi design</p>
   </div>
 
-  <script src="script.js"></script>
+  <noscript>
+    <p style="padding:20px;font-size:.8125rem">このページを使うには JavaScript を有効にしてください。</p>
+  </noscript>
+
+  <script>
+    (function () {
+
+      /* ------------------------------------------------------------------
+         インキのベタ色（sRGB）。ここの数値を直せば発色を調整できます。
+         一般的なプロセスインキ（Japan Color 相当）の値。
+      ------------------------------------------------------------------ */
+      var INK = {
+        w: [255, 255, 255],  /* 紙白           */
+        c: [0, 160, 233],  /* C100           */
+        m: [228, 0, 127],  /* M100           */
+        y: [255, 241, 0],  /* Y100           */
+        cm: [29, 32, 136],  /* C100 M100      */
+        cy: [0, 153, 68],  /* C100 Y100      */
+        my: [230, 0, 18],  /* M100 Y100      */
+        cmy: [55, 47, 45],  /* C100 M100 Y100 */
+        k: [35, 24, 21]   /* K100           */
+      };
+
+      var CH = ['c', 'm', 'y', 'k'];
+      var state = { c: 0, m: 0, y: 0, k: 0 };
+      var touched = false;
+
+      var el = {};
+      CH.forEach(function (k) {
+        el[k] = {
+          rng: document.getElementById('s' + k),
+          num: document.getElementById('n' + k),
+          val: document.getElementById('v' + k)
+        };
+      });
+      var chip = document.getElementById('chip');
+      var copyBtn = document.getElementById('copyBtn');
+      var status = document.getElementById('status');
+      var limit = document.getElementById('limit');
+      var reset = document.getElementById('reset');
+
+      function clamp(n) { return Math.max(0, Math.min(100, n)); }
+
+      /* CMY はノイゲバウア式（8通りの重なりを面積比で混ぜる）、
+         K はその上への刷り重ねとして乗算する。                  */
+      function toRgb(s) {
+        var c = s.c / 100, m = s.m / 100, y = s.y / 100, k = s.k / 100;
+        var prim = [INK.w, INK.c, INK.m, INK.y, INK.cm, INK.cy, INK.my, INK.cmy];
+        var area = [
+          (1 - c) * (1 - m) * (1 - y),
+          c * (1 - m) * (1 - y),
+          (1 - c) * m * (1 - y),
+          (1 - c) * (1 - m) * y,
+          c * m * (1 - y),
+          c * (1 - m) * y,
+          (1 - c) * m * y,
+          c * m * y
+        ];
+        var out = [0, 0, 0], i, j;
+        for (i = 0; i < 8; i++) {
+          for (j = 0; j < 3; j++) out[j] += area[i] * prim[i][j];
+        }
+        for (j = 0; j < 3; j++) {
+          var t = 1 - k * (1 - INK.k[j] / 255);
+          out[j] = Math.round(Math.max(0, Math.min(255, out[j] * t)));
+        }
+        return out;
+      }
+
+      function cssOf(a) { return 'rgb(' + a[0] + ',' + a[1] + ',' + a[2] + ')'; }
+      function codeText() {
+        return CH.map(function (k) { return k.toUpperCase() + state[k]; }).join(' ');
+      }
+      /* 他を固定すれば各チャンネルは線形なので、2点の gradient で正確に描ける */
+      function trackOf(k) {
+        var lo = { c: state.c, m: state.m, y: state.y, k: state.k };
+        var hi = { c: state.c, m: state.m, y: state.y, k: state.k };
+        lo[k] = 0; hi[k] = 100;
+        return 'linear-gradient(90deg,' + cssOf(toRgb(lo)) + ' 0%,' + cssOf(toRgb(hi)) + ' 100%)';
+      }
+
+      var hashTimer;
+      function queueHash() {
+        if (!touched) return;
+        clearTimeout(hashTimer);
+        hashTimer = setTimeout(function () {
+          var h = '#' + CH.map(function (k) { return k + '=' + state[k]; }).join('&');
+          try { history.replaceState(null, '', h); } catch (e) { }
+        }, 300);
+      }
+
+      function render() {
+        var rgb = toRgb(state);
+        chip.style.background = cssOf(rgb);
+
+        CH.forEach(function (k) {
+          var v = String(state[k]);
+          el[k].val.textContent = v;
+          el[k].rng.style.setProperty('--track', trackOf(k));
+          if (el[k].rng.value !== v) el[k].rng.value = v;
+          if (el[k].num.value !== v && document.activeElement !== el[k].num) el[k].num.value = v;
+        });
+
+        var total = state.c + state.m + state.y + state.k;
+        if (total > 300) {
+          limit.textContent = 'インクの合計が ' + total + '% です。300% を超えると、印刷の仕上がりが不安定になることがあります。';
+          limit.hidden = false;
+        } else {
+          limit.hidden = true;
+        }
+        queueHash();
+      }
+
+      CH.forEach(function (k) {
+        el[k].rng.addEventListener('input', function (e) {
+          touched = true;
+          state[k] = clamp(parseInt(e.target.value, 10) || 0);
+          render();
+        });
+        el[k].num.addEventListener('input', function (e) {
+          var raw = e.target.value.trim();
+          if (raw === '') return;
+          var n = parseInt(raw, 10);
+          if (isNaN(n)) return;
+          touched = true;
+          n = clamp(n);
+          if (String(n) !== raw) e.target.value = n;
+          state[k] = n;
+          render();
+        });
+        el[k].num.addEventListener('blur', function (e) { e.target.value = state[k]; });
+      });
+
+      function legacyCopy(text) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return ok;
+        } catch (e) { return false; }
+      }
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text).then(
+            function () { return true; },
+            function () { return legacyCopy(text); }
+          );
+        }
+        return Promise.resolve(legacyCopy(text));
+      }
+
+      var flashTimer, btnTimer;
+      function flash(msg) {
+        status.textContent = msg;
+        clearTimeout(flashTimer);
+        flashTimer = setTimeout(function () { status.textContent = ''; }, 2200);
+      }
+
+      copyBtn.addEventListener('click', function () {
+        var text = codeText();
+        copyText(text).then(function (ok) {
+          if (ok) {
+            copyBtn.textContent = 'コピーしました';
+            copyBtn.classList.add('is-copied');
+            flash(text + ' をコピーしました');
+            clearTimeout(btnTimer);
+            btnTimer = setTimeout(function () {
+              copyBtn.textContent = 'この色のコードをコピー';
+              copyBtn.classList.remove('is-copied');
+            }, 2000);
+          } else {
+            flash('コピーできませんでした。上の数値を書き写してお使いください。');
+          }
+        });
+      });
+
+      reset.addEventListener('click', function () {
+        CH.forEach(function (k) { state[k] = 0; });
+        touched = false;
+        clearTimeout(hashTimer);
+        try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { }
+        render();
+        flash('すべて 0 に戻しました');
+      });
+
+      (function init() {
+        var h = location.hash.replace(/^#/, '');
+        if (h) {
+          var p = new URLSearchParams(h);
+          CH.forEach(function (k) {
+            var v = p.get(k);
+            if (v !== null) {
+              var n = parseInt(v, 10);
+              if (!isNaN(n)) { state[k] = clamp(n); touched = true; }
+            }
+          });
+        }
+        render();
+      })();
+    })();
+  </script>
 </body>
+
 </html>
