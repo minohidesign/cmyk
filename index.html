@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#FFFFFF">
   <title>色をつくる｜minohi design</title>
-  <meta name="description" content="C・M・Y・K の数値を動かして、スマホケースの色を画面で確かめられます。決まった色のコードはそのままコピーできます。">
+  <meta name="description" content="スマホケースの色と名入れの文字色を、C・M・Y・K の数値でつくれます。決まった内容はそのままコピーできます。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -45,6 +45,8 @@
     }
 
     h2,
+    h3,
+    h4,
     p {
       margin: 0
     }
@@ -78,35 +80,92 @@
       color: var(--muted)
     }
 
-    /* ---------- swatch (sticky) ---------- */
+    /* ---------- preview (sticky) ---------- */
     .viewer {
       position: sticky;
       top: 0;
       z-index: 5;
-      padding: 14px 0 12px;
+      padding: 14px 0 16px;
       background: var(--surround);
     }
 
-    .chip {
-      height: clamp(104px, 19vh, 168px);
-      border-radius: 10px;
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10);
+    .preview {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* 実機の比率 71.6 : 147.6。角丸は縦横で同じ px になるよう % を分けて指定 */
+    .case {
+      position: relative;
+      flex: none;
+      height: clamp(184px, 30vh, 240px);
+      aspect-ratio: 71.6 / 147.6;
+      border-radius: 14% / 6.8%;
+      overflow: hidden;
+      container-type: inline-size;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .14);
+    }
+
+    .case-half {
+      width: 100%;
+      height: 100%;
       background: #fff;
+    }
+
+    .engrave {
+      position: absolute;
+      left: 7%;
+      right: 7%;
+      bottom: 6%;
+      text-align: center;
+      font-size: 11px;
+      font-size: 9cqw;
+      line-height: 1.35;
+      letter-spacing: .04em;
+      word-break: break-word;
+      pointer-events: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #231815;
     }
 
     .readout {
       display: flex;
-      align-items: baseline;
+      flex-direction: column;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .half-name {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .8125rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      color: var(--muted);
+    }
+
+    .dot {
+      flex: none;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18);
+    }
+
+    .vals {
+      display: flex;
       flex-wrap: wrap;
-      gap: 4px 16px;
-      margin-top: 12px;
+      gap: 0 13px;
       font-variant-numeric: tabular-nums;
     }
 
     .pair {
       display: flex;
       align-items: baseline;
-      gap: 5px
+      gap: 4px
     }
 
     .pair .ch {
@@ -117,12 +176,26 @@
     }
 
     .pair .val {
-      font-size: 1.375rem;
+      font-size: 1.125rem;
       font-weight: 600;
       letter-spacing: -.01em
     }
 
-    /* ---------- sliders ---------- */
+    /* ---------- groups ---------- */
+    .group+.group {
+      margin-top: 22px
+    }
+
+    .group-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: .9375rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+    }
+
     .controls {
       padding: 4px 16px 16px;
       background: var(--paper);
@@ -135,7 +208,7 @@
       grid-template-columns: 1.2rem 1fr auto auto;
       column-gap: 9px;
       align-items: center;
-      padding: 12px 0 8px
+      padding: 10px 0 6px
     }
 
     .row+.row {
@@ -189,7 +262,7 @@
     .rng {
       grid-column: 1/-1;
       width: 100%;
-      height: 38px;
+      height: 36px;
       margin: 0;
       background: transparent;
       -webkit-appearance: none;
@@ -231,8 +304,64 @@
       box-shadow: 0 1px 4px rgba(0, 0, 0, .25)
     }
 
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      min-height: 54px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--paper);
+      font-size: .9375rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-align: left;
+    }
+
+    .toggle-box {
+      position: relative;
+      flex: none;
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--muted);
+      border-radius: 4px;
+    }
+
+    .toggle[aria-pressed="true"] {
+      border-color: var(--ink);
+      box-shadow: inset 0 0 0 1px var(--ink);
+    }
+
+    .toggle[aria-pressed="true"] .toggle-box {
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .toggle[aria-pressed="true"] .toggle-box::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .eng-panel {
+      margin-top: 12px
+    }
+
+    .eng-panel[hidden],
+    .half[hidden] {
+      display: none
+    }
+
     .limit {
-      margin-top: 12px;
+      margin-top: 10px;
       padding: 10px 12px;
       border-radius: 8px;
       background: var(--field);
@@ -249,7 +378,7 @@
     .copy {
       display: block;
       width: 100%;
-      margin-top: 16px;
+      margin-top: 22px;
       min-height: 52px;
       padding: 0 20px;
       border: 0;
@@ -339,12 +468,12 @@
     }
 
     .grid {
-        padding: 30px;
-        background: white;
-        border-radius: 10px;
-        margin-top: 20px;
-        box-shadow: var(--shadow);
-      }
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: var(--shadow);
+    }
 
     @media (min-width:880px) {
       .wrap {
@@ -368,13 +497,12 @@
         padding-top: 0
       }
 
-      .chip {
-        height: auto;
-        aspect-ratio: 4/3
+      .case {
+        height: clamp(240px, 42vh, 340px);
       }
 
       .pair .val {
-        font-size: 1.625rem
+        font-size: 1.25rem
       }
     }
 
@@ -395,53 +523,121 @@
 
     <main class="grid">
       <section class="viewer">
-        <div class="chip" id="chip"></div>
-        <div class="readout">
-          <span class="pair"><span class="ch">C</span><span class="val" id="vc">0</span></span>
-          <span class="pair"><span class="ch">M</span><span class="val" id="vm">0</span></span>
-          <span class="pair"><span class="ch">Y</span><span class="val" id="vy">0</span></span>
-          <span class="pair"><span class="ch">K</span><span class="val" id="vk">0</span></span>
+        <div class="preview">
+          <div class="case">
+            <div class="case-half" id="caseTop"></div>
+            <div class="engrave" id="engrave"></div>
+          </div>
+
+          <div class="readout">
+            <div class="half">
+              <p class="half-name"><span class="dot" id="dotT"></span>ケースの色</p>
+              <p class="vals">
+                <span class="pair"><span class="ch">C</span><span class="val" id="vtc">0</span></span>
+                <span class="pair"><span class="ch">M</span><span class="val" id="vtm">0</span></span>
+                <span class="pair"><span class="ch">Y</span><span class="val" id="vty">0</span></span>
+                <span class="pair"><span class="ch">K</span><span class="val" id="vtk">0</span></span>
+              </p>
+            </div>
+            <div class="half" id="readX" hidden>
+              <p class="half-name"><span class="dot" id="dotX"></span>文字</p>
+              <p class="vals">
+                <span class="pair"><span class="ch">C</span><span class="val" id="vxc">0</span></span>
+                <span class="pair"><span class="ch">M</span><span class="val" id="vxm">0</span></span>
+                <span class="pair"><span class="ch">Y</span><span class="val" id="vxy">0</span></span>
+                <span class="pair"><span class="ch">K</span><span class="val" id="vxk">100</span></span>
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
       <section class="panel">
-        <div class="controls">
-          <div class="row">
-            <label class="ch" for="sc">C</label>
-            <span class="name">シアン</span>
-            <input class="num" id="nc" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-              aria-label="シアンの数値">
-            <span class="pct">%</span>
-            <input class="rng" id="sc" type="range" min="0" max="100" step="1" value="0" aria-label="シアン">
+
+        <div class="group">
+          <h3 class="group-head"><span class="dot" id="dotHeadT"></span>ケースの色</h3>
+          <div class="controls">
+            <div class="row">
+              <label class="ch" for="stc">C</label>
+              <span class="name">シアン</span>
+              <input class="num" id="ntc" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+                aria-label="ケース シアンの数値">
+              <span class="pct">%</span>
+              <input class="rng" id="stc" type="range" min="0" max="100" step="1" value="0" aria-label="ケース シアン">
+            </div>
+            <div class="row">
+              <label class="ch" for="stm">M</label>
+              <span class="name">マゼンタ</span>
+              <input class="num" id="ntm" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+                aria-label="ケース マゼンタの数値">
+              <span class="pct">%</span>
+              <input class="rng" id="stm" type="range" min="0" max="100" step="1" value="0" aria-label="ケース マゼンタ">
+            </div>
+            <div class="row">
+              <label class="ch" for="sty">Y</label>
+              <span class="name">イエロー</span>
+              <input class="num" id="nty" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+                aria-label="ケース イエローの数値">
+              <span class="pct">%</span>
+              <input class="rng" id="sty" type="range" min="0" max="100" step="1" value="0" aria-label="ケース イエロー">
+            </div>
+            <div class="row">
+              <label class="ch" for="stk">K</label>
+              <span class="name">ブラック</span>
+              <input class="num" id="ntk" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+                aria-label="ケース ブラックの数値">
+              <span class="pct">%</span>
+              <input class="rng" id="stk" type="range" min="0" max="100" step="1" value="0" aria-label="ケース ブラック">
+            </div>
+            <p class="limit" id="limitT" hidden></p>
           </div>
-          <div class="row">
-            <label class="ch" for="sm">M</label>
-            <span class="name">マゼンタ</span>
-            <input class="num" id="nm" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-              aria-label="マゼンタの数値">
-            <span class="pct">%</span>
-            <input class="rng" id="sm" type="range" min="0" max="100" step="1" value="0" aria-label="マゼンタ">
-          </div>
-          <div class="row">
-            <label class="ch" for="sy">Y</label>
-            <span class="name">イエロー</span>
-            <input class="num" id="ny" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-              aria-label="イエローの数値">
-            <span class="pct">%</span>
-            <input class="rng" id="sy" type="range" min="0" max="100" step="1" value="0" aria-label="イエロー">
-          </div>
-          <div class="row">
-            <label class="ch" for="sk">K</label>
-            <span class="name">ブラック</span>
-            <input class="num" id="nk" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-              aria-label="ブラックの数値">
-            <span class="pct">%</span>
-            <input class="rng" id="sk" type="range" min="0" max="100" step="1" value="0" aria-label="ブラック">
-          </div>
-          <p class="limit" id="limit" hidden></p>
         </div>
 
-        <button class="copy" id="copyBtn" type="button">この色のコードをコピー</button>
+        <div class="group">
+          <button class="toggle" id="engToggle" type="button" aria-pressed="false" aria-controls="engPanel">
+            <span class="toggle-box" aria-hidden="true"></span>名入れをする
+          </button>
+          <div class="eng-panel" id="engPanel" hidden>
+            <h3 class="group-head"><span class="dot" id="dotHeadX"></span>名入れの文字色</h3>
+            <div class="controls">
+            <div class="row">
+              <label class="ch" for="sxc">C</label>
+              <span class="name">シアン</span>
+              <input class="num" id="nxc" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+                aria-label="文字 シアンの数値">
+              <span class="pct">%</span>
+              <input class="rng" id="sxc" type="range" min="0" max="100" step="1" value="0" aria-label="文字 シアン">
+            </div>
+            <div class="row">
+              <label class="ch" for="sxm">M</label>
+              <span class="name">マゼンタ</span>
+              <input class="num" id="nxm" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+                aria-label="文字 マゼンタの数値">
+              <span class="pct">%</span>
+              <input class="rng" id="sxm" type="range" min="0" max="100" step="1" value="0" aria-label="文字 マゼンタ">
+            </div>
+            <div class="row">
+              <label class="ch" for="sxy">Y</label>
+              <span class="name">イエロー</span>
+              <input class="num" id="nxy" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
+                aria-label="文字 イエローの数値">
+              <span class="pct">%</span>
+              <input class="rng" id="sxy" type="range" min="0" max="100" step="1" value="0" aria-label="文字 イエロー">
+            </div>
+            <div class="row">
+              <label class="ch" for="sxk">K</label>
+              <span class="name">ブラック</span>
+              <input class="num" id="nxk" type="number" min="0" max="100" step="1" value="100" inputmode="numeric"
+                aria-label="文字 ブラックの数値">
+              <span class="pct">%</span>
+              <input class="rng" id="sxk" type="range" min="0" max="100" step="1" value="100" aria-label="文字 ブラック">
+            </div>
+              <p class="limit" id="limitX" hidden></p>
+            </div>
+          </div>
+        </div>
+
+        <button class="copy" id="copyBtn" type="button">この内容のコードをコピー</button>
         <div class="actions">
           <p class="status" id="status" role="status" aria-live="polite"></p>
           <button class="reset" id="reset" type="button">色をリセットする</button>
@@ -452,6 +648,7 @@
     <section class="note">
       <h2>印刷の色について</h2>
       <p>お使いの端末やモニターの設定によって見え方が変わり、実際の印刷ではインクと素材の性質によっても発色が変わります。色みの目安としてご覧ください。</p>
+      <p>プレビューの「Sample」は、名入れの文字色をご確認いただくための表示です。実際にお入れする文字や書体は、ご注文時にご相談ください。</p>
     </section>
 
     <p class="foot">&copy; minohi design</p>
@@ -481,21 +678,44 @@
       };
 
       var CH = ['c', 'm', 'y', 'k'];
-      var state = { c: 0, m: 0, y: 0, k: 0 };
+      /* id はHTMLの要素IDの接頭辞。face が null のものはケースの面ではなく文字の色 */
+      var SETS = [
+        { id: 't', label: 'ケースの色', face: 'caseTop', init: { c: 0, m: 0, y: 0, k: 0 } },
+        { id: 'x', label: '文字', face: null, init: { c: 0, m: 0, y: 0, k: 100 } }
+      ];
+
+      var state = {};
+      SETS.forEach(function (s) {
+        state[s.id] = { c: s.init.c, m: s.init.m, y: s.init.y, k: s.init.k };
+      });
+      var engOn = false;
       var touched = false;
 
       var el = {};
-      CH.forEach(function (k) {
-        el[k] = {
-          rng: document.getElementById('s' + k),
-          num: document.getElementById('n' + k),
-          val: document.getElementById('v' + k)
-        };
+      SETS.forEach(function (s) {
+        var up = s.id.toUpperCase();
+        el[s.id] = { ch: {} };
+        CH.forEach(function (k) {
+          el[s.id].ch[k] = {
+            rng: document.getElementById('s' + s.id + k),
+            num: document.getElementById('n' + s.id + k),
+            val: document.getElementById('v' + s.id + k)
+          };
+        });
+        el[s.id].face = s.face ? document.getElementById(s.face) : null;
+        el[s.id].dots = [
+          document.getElementById('dot' + up),
+          document.getElementById('dotHead' + up)
+        ];
+        el[s.id].limit = document.getElementById('limit' + up);
       });
-      var chip = document.getElementById('chip');
+
+      var engrave = document.getElementById('engrave');
+      var engToggle = document.getElementById('engToggle');
+      var engPanel = document.getElementById('engPanel');
+      var readX = document.getElementById('readX');
       var copyBtn = document.getElementById('copyBtn');
       var status = document.getElementById('status');
-      var limit = document.getElementById('limit');
       var reset = document.getElementById('reset');
 
       function clamp(n) { return Math.max(0, Math.min(100, n)); }
@@ -527,13 +747,20 @@
       }
 
       function cssOf(a) { return 'rgb(' + a[0] + ',' + a[1] + ',' + a[2] + ')'; }
-      function codeText() {
-        return CH.map(function (k) { return k.toUpperCase() + state[k]; }).join(' ');
+
+      function setCode(id) {
+        return CH.map(function (k) { return k.toUpperCase() + state[id][k]; }).join(' ');
       }
+      function codeText() {
+        return 'ケースの色 ' + setCode('t')
+          + '\n' + (engOn ? '名入れの文字色 ' + setCode('x') : '名入れ なし');
+      }
+
       /* 他を固定すれば各チャンネルは線形なので、2点の gradient で正確に描ける */
-      function trackOf(k) {
-        var lo = { c: state.c, m: state.m, y: state.y, k: state.k };
-        var hi = { c: state.c, m: state.m, y: state.y, k: state.k };
+      function trackOf(id, k) {
+        var s = state[id];
+        var lo = { c: s.c, m: s.m, y: s.y, k: s.k };
+        var hi = { c: s.c, m: s.m, y: s.y, k: s.k };
         lo[k] = 0; hi[k] = 100;
         return 'linear-gradient(90deg,' + cssOf(toRgb(lo)) + ' 0%,' + cssOf(toRgb(hi)) + ' 100%)';
       }
@@ -543,57 +770,82 @@
         if (!touched) return;
         clearTimeout(hashTimer);
         hashTimer = setTimeout(function () {
-          var h = '#' + CH.map(function (k) { return k + '=' + state[k]; }).join('&');
-          try { history.replaceState(null, '', h); } catch (e) { }
+          var parts = SETS.map(function (s) {
+            return s.id + '=' + CH.map(function (k) { return state[s.id][k]; }).join(',');
+          });
+          if (engOn) parts.push('e=1');
+          try { history.replaceState(null, '', '#' + parts.join('&')); } catch (e) { }
         }, 300);
       }
 
       function render() {
-        var rgb = toRgb(state);
-        chip.style.background = cssOf(rgb);
+        SETS.forEach(function (s) {
+          var id = s.id;
+          var col = cssOf(toRgb(state[id]));
+          if (el[id].face) el[id].face.style.background = col;
+          el[id].dots.forEach(function (d) { if (d) d.style.background = col; });
 
-        CH.forEach(function (k) {
-          var v = String(state[k]);
-          el[k].val.textContent = v;
-          el[k].rng.style.setProperty('--track', trackOf(k));
-          if (el[k].rng.value !== v) el[k].rng.value = v;
-          if (el[k].num.value !== v && document.activeElement !== el[k].num) el[k].num.value = v;
+          CH.forEach(function (k) {
+            var c = el[id].ch[k];
+            var v = String(state[id][k]);
+            c.val.textContent = v;
+            c.rng.style.setProperty('--track', trackOf(id, k));
+            if (c.rng.value !== v) c.rng.value = v;
+            if (c.num.value !== v && document.activeElement !== c.num) c.num.value = v;
+          });
+
+          var total = CH.reduce(function (sum, k) { return sum + state[id][k]; }, 0);
+          if (total > 300) {
+            el[id].limit.textContent = 'インクの合計が ' + total + '% です。300% を超えると、印刷の仕上がりが不安定になることがあります。';
+            el[id].limit.hidden = false;
+          } else {
+            el[id].limit.hidden = true;
+          }
         });
 
-        var total = state.c + state.m + state.y + state.k;
-        if (total > 300) {
-          limit.textContent = 'インクの合計が ' + total + '% です。300% を超えると、印刷の仕上がりが不安定になることがあります。';
-          limit.hidden = false;
-        } else {
-          limit.hidden = true;
-        }
+        engToggle.setAttribute('aria-pressed', engOn ? 'true' : 'false');
+        engPanel.hidden = !engOn;
+        readX.hidden = !engOn;
+        engrave.textContent = engOn ? 'Sample' : '';
+        engrave.style.color = cssOf(toRgb(state.x));
+
         queueHash();
       }
 
-      CH.forEach(function (k) {
-        el[k].rng.addEventListener('input', function (e) {
-          touched = true;
-          state[k] = clamp(parseInt(e.target.value, 10) || 0);
-          render();
+      SETS.forEach(function (s) {
+        var id = s.id;
+        CH.forEach(function (k) {
+          var c = el[id].ch[k];
+          c.rng.addEventListener('input', function (e) {
+            touched = true;
+            state[id][k] = clamp(parseInt(e.target.value, 10) || 0);
+            render();
+          });
+          c.num.addEventListener('input', function (e) {
+            var raw = e.target.value.trim();
+            if (raw === '') return;
+            var n = parseInt(raw, 10);
+            if (isNaN(n)) return;
+            touched = true;
+            n = clamp(n);
+            if (String(n) !== raw) e.target.value = n;
+            state[id][k] = n;
+            render();
+          });
+          c.num.addEventListener('blur', function (e) { e.target.value = state[id][k]; });
         });
-        el[k].num.addEventListener('input', function (e) {
-          var raw = e.target.value.trim();
-          if (raw === '') return;
-          var n = parseInt(raw, 10);
-          if (isNaN(n)) return;
-          touched = true;
-          n = clamp(n);
-          if (String(n) !== raw) e.target.value = n;
-          state[k] = n;
-          render();
-        });
-        el[k].num.addEventListener('blur', function (e) { e.target.value = state[k]; });
       });
 
-      function legacyCopy(text) {
+      engToggle.addEventListener('click', function () {
+        engOn = !engOn;
+        touched = true;
+        render();
+      });
+
+      function legacyCopy(t) {
         try {
           var ta = document.createElement('textarea');
-          ta.value = text;
+          ta.value = t;
           ta.setAttribute('readonly', '');
           ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
           document.body.appendChild(ta);
@@ -603,33 +855,32 @@
           return ok;
         } catch (e) { return false; }
       }
-      function copyText(text) {
+      function copyText(t) {
         if (navigator.clipboard && window.isSecureContext) {
-          return navigator.clipboard.writeText(text).then(
+          return navigator.clipboard.writeText(t).then(
             function () { return true; },
-            function () { return legacyCopy(text); }
+            function () { return legacyCopy(t); }
           );
         }
-        return Promise.resolve(legacyCopy(text));
+        return Promise.resolve(legacyCopy(t));
       }
 
       var flashTimer, btnTimer;
       function flash(msg) {
         status.textContent = msg;
         clearTimeout(flashTimer);
-        flashTimer = setTimeout(function () { status.textContent = ''; }, 2200);
+        flashTimer = setTimeout(function () { status.textContent = ''; }, 2600);
       }
 
       copyBtn.addEventListener('click', function () {
-        var text = codeText();
-        copyText(text).then(function (ok) {
+        copyText(codeText()).then(function (ok) {
           if (ok) {
             copyBtn.textContent = 'コピーしました';
             copyBtn.classList.add('is-copied');
-            flash(text + ' をコピーしました');
+            flash('色と名入れの内容をコピーしました');
             clearTimeout(btnTimer);
             btnTimer = setTimeout(function () {
-              copyBtn.textContent = 'この色のコードをコピー';
+              copyBtn.textContent = 'この内容のコードをコピー';
               copyBtn.classList.remove('is-copied');
             }, 2000);
           } else {
@@ -639,25 +890,31 @@
       });
 
       reset.addEventListener('click', function () {
-        CH.forEach(function (k) { state[k] = 0; });
+        SETS.forEach(function (s) {
+          CH.forEach(function (k) { state[s.id][k] = s.init[k]; });
+        });
+        engOn = false;
         touched = false;
         clearTimeout(hashTimer);
         try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { }
         render();
-        flash('すべて 0 に戻しました');
+        flash('最初の状態に戻しました');
       });
 
       (function init() {
         var h = location.hash.replace(/^#/, '');
         if (h) {
           var p = new URLSearchParams(h);
-          CH.forEach(function (k) {
-            var v = p.get(k);
-            if (v !== null) {
-              var n = parseInt(v, 10);
-              if (!isNaN(n)) { state[k] = clamp(n); touched = true; }
-            }
+          SETS.forEach(function (s) {
+            var v = p.get(s.id);
+            if (!v) return;
+            var parts = v.split(',');
+            CH.forEach(function (k, i) {
+              var n = parseInt(parts[i], 10);
+              if (!isNaN(n)) { state[s.id][k] = clamp(n); touched = true; }
+            });
           });
+          if (p.get('e') === '1') { engOn = true; touched = true; }
         }
         render();
       })();
