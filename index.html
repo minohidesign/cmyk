@@ -89,19 +89,11 @@
       background: var(--surround);
     }
 
-    .preview {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    /* 実機の比率 71.6 : 147.6。角丸は縦横で同じ px になるよう % を分けて指定 */
     .case {
       position: relative;
-      flex: none;
-      height: clamp(184px, 30vh, 240px);
-      aspect-ratio: 71.6 / 147.6;
-      border-radius: 14% / 6.8%;
+      width: 100%;
+      height: clamp(104px, 19vh, 168px);
+      border-radius: 10px;
       overflow: hidden;
       container-type: inline-size;
       box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .14);
@@ -115,25 +107,27 @@
 
     .engrave {
       position: absolute;
-      left: 7%;
-      right: 7%;
-      bottom: 6%;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8%;
       text-align: center;
-      font-size: 11px;
-      font-size: 9cqw;
+      font-size: 18px;
+      font-size: clamp(15px, 4.5cqw, 26px);
       line-height: 1.35;
       letter-spacing: .04em;
       word-break: break-word;
       pointer-events: none;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      color: #231815;
+      color: #FFFFFF;
     }
 
     .readout {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      min-width: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+      gap: 14px 18px;
+      margin-top: 14px;
     }
 
     .half-name {
@@ -155,30 +149,10 @@
       box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18);
     }
 
-    .vals {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0 13px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .pair {
-      display: flex;
-      align-items: baseline;
-      gap: 4px
-    }
-
-    .pair .ch {
-      font-size: .75rem;
-      font-weight: 500;
-      letter-spacing: .04em;
-      color: var(--muted)
-    }
-
-    .pair .val {
-      font-size: 1.125rem;
-      font-weight: 600;
-      letter-spacing: -.01em
+    /* 読み出し側の丸はスクリーンショットからスポイトで拾うため大きめ */
+    .readout .dot {
+      width: 30px;
+      height: 30px;
     }
 
     /* ---------- groups ---------- */
@@ -375,37 +349,13 @@
     }
 
     /* ---------- actions ---------- */
-    .copy {
-      display: block;
-      width: 100%;
-      margin-top: 22px;
-      min-height: 52px;
-      padding: 0 20px;
-      border: 0;
-      border-radius: 8px;
-      background: var(--ink);
-      color: #fff;
-      font-size: .9375rem;
-      font-weight: 500;
-      letter-spacing: .06em;
-      transition: background .15s ease;
-    }
-
-    .copy:hover {
-      background: #3A434A
-    }
-
-    .copy.is-copied {
-      background: var(--copied)
-    }
-
     .actions {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       min-height: 1.8em;
-      margin-top: 8px
+      margin-top: 22px
     }
 
     .status {
@@ -498,11 +448,7 @@
       }
 
       .case {
-        height: clamp(240px, 42vh, 340px);
-      }
-
-      .pair .val {
-        font-size: 1.25rem
+        height: clamp(130px, 20vh, 190px);
       }
     }
 
@@ -532,21 +478,9 @@
           <div class="readout">
             <div class="half">
               <p class="half-name"><span class="dot" id="dotT"></span>ケースの色</p>
-              <p class="vals">
-                <span class="pair"><span class="ch">C</span><span class="val" id="vtc">0</span></span>
-                <span class="pair"><span class="ch">M</span><span class="val" id="vtm">0</span></span>
-                <span class="pair"><span class="ch">Y</span><span class="val" id="vty">0</span></span>
-                <span class="pair"><span class="ch">K</span><span class="val" id="vtk">0</span></span>
-              </p>
             </div>
             <div class="half" id="readX" hidden>
-              <p class="half-name"><span class="dot" id="dotX"></span>文字</p>
-              <p class="vals">
-                <span class="pair"><span class="ch">C</span><span class="val" id="vxc">0</span></span>
-                <span class="pair"><span class="ch">M</span><span class="val" id="vxm">0</span></span>
-                <span class="pair"><span class="ch">Y</span><span class="val" id="vxy">0</span></span>
-                <span class="pair"><span class="ch">K</span><span class="val" id="vxk">100</span></span>
-              </p>
+              <p class="half-name"><span class="dot" id="dotX"></span>文字色</p>
             </div>
           </div>
         </div>
@@ -627,17 +561,16 @@
             <div class="row">
               <label class="ch" for="sxk">K</label>
               <span class="name">ブラック</span>
-              <input class="num" id="nxk" type="number" min="0" max="100" step="1" value="100" inputmode="numeric"
+              <input class="num" id="nxk" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
                 aria-label="文字 ブラックの数値">
               <span class="pct">%</span>
-              <input class="rng" id="sxk" type="range" min="0" max="100" step="1" value="100" aria-label="文字 ブラック">
+              <input class="rng" id="sxk" type="range" min="0" max="100" step="1" value="0" aria-label="文字 ブラック">
             </div>
               <p class="limit" id="limitX" hidden></p>
             </div>
           </div>
         </div>
 
-        <button class="copy" id="copyBtn" type="button">この内容のコードをコピー</button>
         <div class="actions">
           <p class="status" id="status" role="status" aria-live="polite"></p>
           <button class="reset" id="reset" type="button">色をリセットする</button>
@@ -681,7 +614,7 @@
       /* id はHTMLの要素IDの接頭辞。face が null のものはケースの面ではなく文字の色 */
       var SETS = [
         { id: 't', label: 'ケースの色', face: 'caseTop', init: { c: 0, m: 0, y: 0, k: 0 } },
-        { id: 'x', label: '文字', face: null, init: { c: 0, m: 0, y: 0, k: 100 } }
+        { id: 'x', label: '文字', face: null, init: { c: 0, m: 0, y: 0, k: 0 } }
       ];
 
       var state = {};
@@ -698,8 +631,7 @@
         CH.forEach(function (k) {
           el[s.id].ch[k] = {
             rng: document.getElementById('s' + s.id + k),
-            num: document.getElementById('n' + s.id + k),
-            val: document.getElementById('v' + s.id + k)
+            num: document.getElementById('n' + s.id + k)
           };
         });
         el[s.id].face = s.face ? document.getElementById(s.face) : null;
@@ -714,7 +646,6 @@
       var engToggle = document.getElementById('engToggle');
       var engPanel = document.getElementById('engPanel');
       var readX = document.getElementById('readX');
-      var copyBtn = document.getElementById('copyBtn');
       var status = document.getElementById('status');
       var reset = document.getElementById('reset');
 
@@ -748,14 +679,6 @@
 
       function cssOf(a) { return 'rgb(' + a[0] + ',' + a[1] + ',' + a[2] + ')'; }
 
-      function setCode(id) {
-        return CH.map(function (k) { return k.toUpperCase() + state[id][k]; }).join(' ');
-      }
-      function codeText() {
-        return 'ケースの色 ' + setCode('t')
-          + '\n' + (engOn ? '名入れの文字色 ' + setCode('x') : '名入れ なし');
-      }
-
       /* 他を固定すれば各チャンネルは線形なので、2点の gradient で正確に描ける */
       function trackOf(id, k) {
         var s = state[id];
@@ -788,7 +711,6 @@
           CH.forEach(function (k) {
             var c = el[id].ch[k];
             var v = String(state[id][k]);
-            c.val.textContent = v;
             c.rng.style.setProperty('--track', trackOf(id, k));
             if (c.rng.value !== v) c.rng.value = v;
             if (c.num.value !== v && document.activeElement !== c.num) c.num.value = v;
@@ -842,52 +764,12 @@
         render();
       });
 
-      function legacyCopy(t) {
-        try {
-          var ta = document.createElement('textarea');
-          ta.value = t;
-          ta.setAttribute('readonly', '');
-          ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
-          document.body.appendChild(ta);
-          ta.select();
-          var ok = document.execCommand('copy');
-          document.body.removeChild(ta);
-          return ok;
-        } catch (e) { return false; }
-      }
-      function copyText(t) {
-        if (navigator.clipboard && window.isSecureContext) {
-          return navigator.clipboard.writeText(t).then(
-            function () { return true; },
-            function () { return legacyCopy(t); }
-          );
-        }
-        return Promise.resolve(legacyCopy(t));
-      }
-
-      var flashTimer, btnTimer;
+      var flashTimer;
       function flash(msg) {
         status.textContent = msg;
         clearTimeout(flashTimer);
         flashTimer = setTimeout(function () { status.textContent = ''; }, 2600);
       }
-
-      copyBtn.addEventListener('click', function () {
-        copyText(codeText()).then(function (ok) {
-          if (ok) {
-            copyBtn.textContent = 'コピーしました';
-            copyBtn.classList.add('is-copied');
-            flash('色と名入れの内容をコピーしました');
-            clearTimeout(btnTimer);
-            btnTimer = setTimeout(function () {
-              copyBtn.textContent = 'この内容のコードをコピー';
-              copyBtn.classList.remove('is-copied');
-            }, 2000);
-          } else {
-            flash('コピーできませんでした。上の数値を書き写してお使いください。');
-          }
-        });
-      });
 
       reset.addEventListener('click', function () {
         SETS.forEach(function (s) {
