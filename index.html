@@ -171,7 +171,7 @@
     }
 
     .controls {
-      padding: 4px 16px 16px;
+      padding: 8px 16px;
       background: var(--paper);
       border: 1px solid var(--line);
       border-radius: 10px
@@ -179,10 +179,10 @@
 
     .row {
       display: grid;
-      grid-template-columns: 1.2rem 1fr auto auto;
-      column-gap: 9px;
+      grid-template-columns: 1.1rem 4.4em minmax(0, 1fr);
+      column-gap: 10px;
       align-items: center;
-      padding: 10px 0 6px
+      padding: 5px 0
     }
 
     .row+.row {
@@ -200,41 +200,7 @@
       color: var(--muted)
     }
 
-    .row .pct {
-      font-size: .8125rem;
-      color: var(--muted)
-    }
-
-    .num {
-      width: 3.3rem;
-      height: 34px;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: var(--field);
-      color: var(--ink);
-      text-align: center;
-      font: inherit;
-      font-size: .9375rem;
-      font-weight: 500;
-      font-variant-numeric: tabular-nums;
-      -webkit-appearance: none;
-      appearance: none;
-      -moz-appearance: textfield;
-    }
-
-    .num::-webkit-outer-spin-button,
-    .num::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0
-    }
-
-    .num:focus {
-      border-color: var(--focus);
-      outline: none
-    }
-
     .rng {
-      grid-column: 1/-1;
       width: 100%;
       height: 36px;
       margin: 0;
@@ -349,13 +315,33 @@
     }
 
     /* ---------- actions ---------- */
+    .save {
+      display: block;
+      width: 100%;
+      margin-top: 22px;
+      min-height: 52px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--ink);
+      color: #fff;
+      font-size: .9375rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      transition: background .15s ease;
+    }
+
+    .save:hover {
+      background: #3A434A
+    }
+
     .actions {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       min-height: 1.8em;
-      margin-top: 22px
+      margin-top: 8px
     }
 
     .status {
@@ -494,33 +480,21 @@
             <div class="row">
               <label class="ch" for="stc">C</label>
               <span class="name">シアン</span>
-              <input class="num" id="ntc" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-                aria-label="ケース シアンの数値">
-              <span class="pct">%</span>
               <input class="rng" id="stc" type="range" min="0" max="100" step="1" value="0" aria-label="ケース シアン">
             </div>
             <div class="row">
               <label class="ch" for="stm">M</label>
               <span class="name">マゼンタ</span>
-              <input class="num" id="ntm" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-                aria-label="ケース マゼンタの数値">
-              <span class="pct">%</span>
               <input class="rng" id="stm" type="range" min="0" max="100" step="1" value="0" aria-label="ケース マゼンタ">
             </div>
             <div class="row">
               <label class="ch" for="sty">Y</label>
               <span class="name">イエロー</span>
-              <input class="num" id="nty" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-                aria-label="ケース イエローの数値">
-              <span class="pct">%</span>
               <input class="rng" id="sty" type="range" min="0" max="100" step="1" value="0" aria-label="ケース イエロー">
             </div>
             <div class="row">
               <label class="ch" for="stk">K</label>
               <span class="name">ブラック</span>
-              <input class="num" id="ntk" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-                aria-label="ケース ブラックの数値">
-              <span class="pct">%</span>
               <input class="rng" id="stk" type="range" min="0" max="100" step="1" value="0" aria-label="ケース ブラック">
             </div>
             <p class="limit" id="limitT" hidden></p>
@@ -528,6 +502,7 @@
         </div>
 
         <div class="group">
+          <p  style="margin-bottom: 10px;">名入れをご希望の方は以下にチェックを入れて、文字色を作成してください。</p>
           <button class="toggle" id="engToggle" type="button" aria-pressed="false" aria-controls="engPanel">
             <span class="toggle-box" aria-hidden="true"></span>名入れをする
           </button>
@@ -537,33 +512,21 @@
             <div class="row">
               <label class="ch" for="sxc">C</label>
               <span class="name">シアン</span>
-              <input class="num" id="nxc" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-                aria-label="文字 シアンの数値">
-              <span class="pct">%</span>
               <input class="rng" id="sxc" type="range" min="0" max="100" step="1" value="0" aria-label="文字 シアン">
             </div>
             <div class="row">
               <label class="ch" for="sxm">M</label>
               <span class="name">マゼンタ</span>
-              <input class="num" id="nxm" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-                aria-label="文字 マゼンタの数値">
-              <span class="pct">%</span>
               <input class="rng" id="sxm" type="range" min="0" max="100" step="1" value="0" aria-label="文字 マゼンタ">
             </div>
             <div class="row">
               <label class="ch" for="sxy">Y</label>
               <span class="name">イエロー</span>
-              <input class="num" id="nxy" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-                aria-label="文字 イエローの数値">
-              <span class="pct">%</span>
               <input class="rng" id="sxy" type="range" min="0" max="100" step="1" value="0" aria-label="文字 イエロー">
             </div>
             <div class="row">
               <label class="ch" for="sxk">K</label>
               <span class="name">ブラック</span>
-              <input class="num" id="nxk" type="number" min="0" max="100" step="1" value="0" inputmode="numeric"
-                aria-label="文字 ブラックの数値">
-              <span class="pct">%</span>
               <input class="rng" id="sxk" type="range" min="0" max="100" step="1" value="0" aria-label="文字 ブラック">
             </div>
               <p class="limit" id="limitX" hidden></p>
@@ -571,6 +534,7 @@
           </div>
         </div>
 
+        <button class="save" id="saveBtn" type="button">画像として保存</button>
         <div class="actions">
           <p class="status" id="status" role="status" aria-live="polite"></p>
           <button class="reset" id="reset" type="button">色をリセットする</button>
@@ -578,11 +542,6 @@
       </section>
     </main>
 
-    <section class="note">
-      <h2>印刷の色について</h2>
-      <p>お使いの端末やモニターの設定によって見え方が変わり、実際の印刷ではインクと素材の性質によっても発色が変わります。色みの目安としてご覧ください。</p>
-      <p>プレビューの「Sample」は、名入れの文字色をご確認いただくための表示です。実際にお入れする文字や書体は、ご注文時にご相談ください。</p>
-    </section>
 
     <p class="foot">&copy; minohi design</p>
   </div>
@@ -630,8 +589,7 @@
         el[s.id] = { ch: {} };
         CH.forEach(function (k) {
           el[s.id].ch[k] = {
-            rng: document.getElementById('s' + s.id + k),
-            num: document.getElementById('n' + s.id + k)
+            rng: document.getElementById('s' + s.id + k)
           };
         });
         el[s.id].face = s.face ? document.getElementById(s.face) : null;
@@ -647,6 +605,7 @@
       var engPanel = document.getElementById('engPanel');
       var readX = document.getElementById('readX');
       var status = document.getElementById('status');
+      var saveBtn = document.getElementById('saveBtn');
       var reset = document.getElementById('reset');
 
       function clamp(n) { return Math.max(0, Math.min(100, n)); }
@@ -713,7 +672,6 @@
             var v = String(state[id][k]);
             c.rng.style.setProperty('--track', trackOf(id, k));
             if (c.rng.value !== v) c.rng.value = v;
-            if (c.num.value !== v && document.activeElement !== c.num) c.num.value = v;
           });
 
           var total = CH.reduce(function (sum, k) { return sum + state[id][k]; }, 0);
@@ -743,18 +701,6 @@
             state[id][k] = clamp(parseInt(e.target.value, 10) || 0);
             render();
           });
-          c.num.addEventListener('input', function (e) {
-            var raw = e.target.value.trim();
-            if (raw === '') return;
-            var n = parseInt(raw, 10);
-            if (isNaN(n)) return;
-            touched = true;
-            n = clamp(n);
-            if (String(n) !== raw) e.target.value = n;
-            state[id][k] = n;
-            render();
-          });
-          c.num.addEventListener('blur', function (e) { e.target.value = state[id][k]; });
         });
       });
 
@@ -770,6 +716,121 @@
         clearTimeout(flashTimer);
         flashTimer = setTimeout(function () { status.textContent = ''; }, 2600);
       }
+
+      /* ---- プレビューを PNG として書き出す ---------------------------
+         スクリーンショットと違い、端末のカラープロファイルの影響を受けない
+         タグなし sRGB の画像になる。スポイトで拾う色が環境に左右されない。
+      ------------------------------------------------------------------ */
+      function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+
+      function buildCanvas() {
+        var S = 2, PAD = 28, W = 560;
+        var D = 96, G = 28, LH = 30;
+        var caseW = W - PAD * 2, caseH = 190, caseX = PAD, caseY = PAD, R = 12;
+        var sw = [{ label: 'ケースの色', color: cssOf(toRgb(state.t)) }];
+        if (engOn) sw.push({ label: '文字色', color: cssOf(toRgb(state.x)) });
+
+        var swY = caseY + caseH + 34;
+        var H = swY + D + LH + PAD;
+
+        var cv = document.createElement('canvas');
+        cv.width = W * S;
+        cv.height = H * S;
+        var ctx = cv.getContext('2d');
+        ctx.scale(S, S);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.save();
+        roundRect(ctx, caseX, caseY, caseW, caseH, R);
+        ctx.clip();
+        ctx.fillStyle = cssOf(toRgb(state.t));
+        ctx.fillRect(caseX, caseY, caseW, caseH);
+        if (engOn) {
+          ctx.fillStyle = cssOf(toRgb(state.x));
+          ctx.font = '500 24px "Plus Jakarta Sans", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('Sample', caseX + caseW / 2, caseY + caseH / 2);
+        }
+        ctx.restore();
+        ctx.strokeStyle = 'rgba(0,0,0,.14)';
+        ctx.lineWidth = 1;
+        roundRect(ctx, caseX + .5, caseY + .5, caseW - 1, caseH - 1, R);
+        ctx.stroke();
+
+        var total = sw.length * D + (sw.length - 1) * G;
+        var x0 = (W - total) / 2;
+        ctx.textAlign = 'center';
+        sw.forEach(function (s, i) {
+          var cx = x0 + i * (D + G) + D / 2, cy = swY + D / 2;
+          ctx.beginPath();
+          ctx.arc(cx, cy, D / 2, 0, Math.PI * 2);
+          ctx.fillStyle = s.color;
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(0,0,0,.18)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          ctx.fillStyle = '#79838B';
+          ctx.font = '400 13px "Noto Sans JP", sans-serif';
+          ctx.textBaseline = 'top';
+          ctx.fillText(s.label, cx, swY + D + 10);
+        });
+        return cv;
+      }
+
+      /* スマホ・タブレットだけ共有シートを使う。
+         PC のブラウザも Web Share API に対応しているため、端末で分岐する。 */
+      function isHandheld() {
+        var ua = navigator.userAgent || '';
+        if (/Android|iPhone|iPod|iPad/i.test(ua)) return true;
+        /* iPadOS 13 以降は Macintosh を名乗るのでタッチ点数で判別 */
+        if (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) return true;
+        return false;
+      }
+
+      function saveImage() {
+        var cv = buildCanvas();
+        var d = new Date();
+        function pad2(n) { return (n < 10 ? '0' : '') + n; }
+        var name = 'minohi-color-' + d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate())
+          + '-' + pad2(d.getHours()) + pad2(d.getMinutes()) + '.png';
+
+        /* ユーザー操作の文脈を保つため同期的に Blob を作る（共有APIの制約） */
+        var url = cv.toDataURL('image/png');
+        var bin = atob(url.split(',')[1]);
+        var arr = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        var blob = new Blob([arr], { type: 'image/png' });
+
+        try {
+          var file = new File([blob], name, { type: 'image/png' });
+          if (isHandheld() && navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file] }).catch(function () { });
+            return;
+          }
+        } catch (e) { }
+
+        var obj = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = obj;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(obj); }, 1000);
+        flash('画像を保存しました');
+      }
+
+      saveBtn.addEventListener('click', saveImage);
 
       reset.addEventListener('click', function () {
         SETS.forEach(function (s) {
